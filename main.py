@@ -67,27 +67,44 @@ while loop == True:
         loop = False
     elif user_selection == 4:
         # Add To Favourites
-        if os.path.getsize('favourtie_songs.json') == 0:
+        if os.path.getsize('favourite_songs.json') == 0:
             fav_songs = []
         else:
             with open('favourite_songs.json', 'r') as file_ref:
-                fav_songs = json.load
+                fav_songs = json.load(file_ref)
         add_song = True
         while add_song == True:
             os.system('cls')
             print('ADD TO FAVOURITES')
             displayAll()
             choose_song = int(
-                input('\nEnter Song "#" to Add or "0" to Exit: '))
-            if choose_song > 0:
+                input('\nEnter Song "#" to Add or "0" to Exit & Save: '))
+            if choose_song > 0 and choose_song - 1 in range(len(songs)):
+                print
                 fav_songs.append(songs[choose_song - 1])
                 print('\nSONG ADDED...')
                 time.sleep(3)
-            else:
+            elif choose_song == 0:
                 add_song = False
+                print('\nEXITING...')
+                time.sleep(3)
+                os.system('cls')
+            else:
+                print('\nERROR: Input Not Available')
+                time.sleep(3)
         with open('favourite_songs.json', 'w') as file_ref:
             json.dump(fav_songs, file_ref)
     elif user_selection == 5:
         print("Remove from Favourites")
     elif user_selection == 6:
-        print("Display Favourites")
+        loop = False
+        os.system('cls')
+        print("DISPLAY FAVOURITES")
+        if os.path.getsize('favourite_songs.json') > 0:
+            with open('favourite_songs.json', 'r') as file_ref:
+                fav_songs + json.load
+            for i in range(len(fav_songs)):
+                print('[' + str(i + 1) + '] ' + fav_songs[i]['title'] +
+                      ' (By ' + fav_songs[i]['artist'] + ')')
+        else:
+            print('No Songs In Favourites')
