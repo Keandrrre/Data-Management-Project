@@ -5,25 +5,26 @@ import time
 
 
 songs = [{'title': 'Jungle', 'artist': 'Drake', "genres": 'Hip-Hop/Rap'}, {'title': 'Replay', 'artist': 'Tems', 'genres': 'Nigerian R&B, Afropop'}, {'title': 'Search & Rescue', 'artist': 'Drake', 'genres': 'Hip-Hop/Rap'}, {'title': 'Kill Bill', 'artist': 'SZA',
-                                                                                                                                                                                                                               'genres': 'Pop music, R&B/Soul, Doo-wop, psychedelic pop, pop soul'}, {'title': "Creepin'", 'artist': 'Metro Boomin, The Weekend & 21 Savage', 'genres': 'Hip-Hop/Rap'}, {'title': 'Rich Flex', 'artist': 'Drake & 21 Savage', 'genres': 'Hip-Hop/Rap'}, {'title': 'Impossible', 'artist': 'Travis Scott', 'genres': 'Hip-Hop/Rap'}]
+                                                                                                                                                                                                                               'genres': 'Pop music, R&B/Soul, Doo-wop, psychedelic pop, pop soul'}, {'title': "Creepin'", 'artist': 'Metro Boomin, The Weekend & 21 Savage', 'genres': 'Hip-Hop/Rap'}, {'title': 'drive Me crazy!', 'artist': 'Lil Yachty', 'genres': 'Alternate/Indie'}, {'title': 'Impossible', 'artist': 'Travis Scott', 'genres': 'Hip-Hop/Rap'}]
 
 
-def displayAll():
-    for i in range(len(songs)):
-        print('[' + str(i + 1) + '] ' + songs[i]['title'] +
-              ' (By ' + songs[i]['artist'] + ')')
+def displayAll(array):
+    for i in range(len(array)):
+        print('[' + str(i + 1) + '] ' + array[i]['title'] +
+              ' (By ' + array[i]['artist'] + ')')
 
 
 # User Options
 loop = True
 while loop == True:
+    os.system('cls')
     user_selection = int(input(
-        "1-Display\n2-Filter Data\n3-Sort Data\n4-Add Data to Favourites\n5-Remove Data from Favourites\n6-Display Favourites\n\nInput: "))
+        "SONG LIBRARY\n0-Exit Library\n1-Display All\n2-Filter Songs\n3-Sort Songs\n4-Add Songs to Favourites\n5-Remove Songs from Favourites\n6-Display Favourites\n\nInput: "))
     if user_selection == 1:
         os.system('cls')
         print("DISPLAY ALL")
         # Display all Songs
-        displayAll()
+        displayAll(songs)
         loop = False
     elif user_selection == 2:
         os.system('cls')
@@ -67,23 +68,32 @@ while loop == True:
         loop = False
     elif user_selection == 4:
         # Add To Favourites
-        if os.path.getsize('favourite_songs.json') == 0:
-            fav_songs = []
-        else:
+        if os.path.getsize('favourite_songs.json') > 0:
             with open('favourite_songs.json', 'r') as file_ref:
                 fav_songs = json.load(file_ref)
+        else:
+            fav_songs = []
         add_song = True
         while add_song == True:
             os.system('cls')
             print('ADD TO FAVOURITES')
-            displayAll()
+            displayAll(songs)
             choose_song = int(
                 input('\nEnter Song "#" to Add or "0" to Exit & Save: '))
-            if choose_song > 0 and choose_song - 1 in range(len(songs)):
-                print
+            if choose_song > 0 and choose_song - 1 in range(len(songs)) and songs[choose_song - 1] not in fav_songs:
                 fav_songs.append(songs[choose_song - 1])
                 print('\nSONG ADDED...')
                 time.sleep(3)
+            elif songs[choose_song - 1] in fav_songs:
+                add_anyway = str(input(
+                    '\nWARNING: This song has already been added to your Favourites, would you still like to add it? (type "yes" or "no"): '))
+                if add_anyway == 'yes':
+                    fav_songs.append(songs[choose_song - 1])
+                    print('\nSONG ADDED...')
+                    time.sleep(3)
+                elif add_anyway == 'no':
+                    print('\nSONG NOT ADDED...')
+                    time.sleep(3)
             elif choose_song == 0:
                 add_song = False
                 print('\nEXITING...')
@@ -96,15 +106,20 @@ while loop == True:
             json.dump(fav_songs, file_ref)
     elif user_selection == 5:
         print("Remove from Favourites")
+        choose_song = input()
     elif user_selection == 6:
-        loop = False
         os.system('cls')
         print("DISPLAY FAVOURITES")
         if os.path.getsize('favourite_songs.json') > 0:
             with open('favourite_songs.json', 'r') as file_ref:
-                fav_songs + json.load
-            for i in range(len(fav_songs)):
-                print('[' + str(i + 1) + '] ' + fav_songs[i]['title'] +
-                      ' (By ' + fav_songs[i]['artist'] + ')')
+                fav_songs = json.load(file_ref)
+                displayAll(fav_songs)
         else:
-            print('No Songs In Favourites')
+            print('\nNo Songs in Favourites')
+            time.sleep(3)
+        loop = False
+    elif user_selection == 0:
+        loop = False
+        print('\nExiting Library...')
+        time.sleep(3)
+        os.system('cls')
