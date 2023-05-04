@@ -98,15 +98,46 @@ while loop == True:
                 add_song = False
                 print('\nEXITING...')
                 time.sleep(3)
+                with open('favourite_songs.json', 'w') as file_ref:
+                    json.dump(fav_songs, file_ref)
                 os.system('cls')
             else:
-                print('\nERROR: Input Not Available')
+                print('\nERROR: Input Not Valid')
                 time.sleep(3)
-        with open('favourite_songs.json', 'w') as file_ref:
-            json.dump(fav_songs, file_ref)
+
     elif user_selection == 5:
         print("Remove from Favourites")
-        choose_song = input()
+        if os.path.getsize('favourite_songs.json') > 0:
+            with open('favourite_songs.json', 'r') as file_ref:
+                fav_songs = json.load(file_ref)
+                displayAll(fav_songs)
+                choose_song = int(input(
+                    '\nEnter Song "#" to Remove or "0" to Exit & Save: '))
+        else:
+            print("No Songs In Favourites")
+            time.sleep(3)
+        remove_song = True
+        while remove_song == True:
+            if choose_song > 0 and fav_songs[choose_song - 1] in range(len(fav_songs)):
+                count = 0
+                for i in range(fav_songs):
+                    if fav_songs[i] == fav_songs[choose_song - 1]:
+                        count += 1
+                fav_songs.pop(fav_songs[choose_song - 1])
+                if count < 2:
+                    print('SONG REMOVED...')
+                else:
+                    print(
+                        'SONG REMOVED...\n(NOTE: It Seems this song was added to "Favourites" multiple times therfore you need to remove for each one)')
+            elif choose_song == 0:
+                remove_song == False
+                print('\EXITING...')
+                time.sleep(3)
+                with open('favourite_songs.json', 'w') as file_ref:
+                    json.dump(fav_songs, file_ref)
+                os.system('cls')
+            else:
+                print('ERROR: Input Not Valid')
     elif user_selection == 6:
         os.system('cls')
         print("DISPLAY FAVOURITES")
