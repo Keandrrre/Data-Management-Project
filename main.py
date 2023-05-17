@@ -1,12 +1,9 @@
 # Data Management Project/ Music Playlist
+# Imports
 import os
 import json
-import time
 
-
-songs = [{'title': 'Jungle', 'artist': 'Drake', "genre": 'Hip-Hop/Rap'}, {'title': 'Replay', 'artist': 'Tems', 'genre': 'Nigerian R&B, Afropop'}, {'title': 'Search & Rescue', 'artist': 'Drake', 'genre': 'Hip-Hop/Rap'}, {'title': 'Kill Bill', 'artist': 'SZA',
-                                                                                                                                                                                                                            'genre': 'Pop music, R&B/Soul, Doo-wop, psychedelic pop, pop soul'}, {'title': "Creepin'", 'artist': 'Metro Boomin, The Weekend & 21 Savage', 'genre': 'Hip-Hop/Rap'}, {'title': 'drive Me crazy!', 'artist': 'Lil Yachty', 'genre': 'Alternate/Indie'}, {'title': 'Impossible', 'artist': 'Travis Scott', 'genre': 'Hip-Hop/Rap'}]
-users = []
+# Functions
 
 
 def displayAll(array):
@@ -23,8 +20,28 @@ def filterData(filterBy):
 
 
 def loadFavourites():
-    with open('favourite_songs.json', 'r') as file_ref:
-        fav_songs = json.load(file_ref)
+    if os.path.getsize('favourite_songs.json') > 0:
+        with open('favourite_songs.json', 'r') as file_ref:
+            return json.load(file_ref)
+    else:
+        return []
+
+
+def saveFavourites():
+    with open('favourite_songs.json', 'w') as file_ref:
+        json.dump(fav_songs, file_ref)
+
+
+def addToFavourites(song):
+    if song > 0 and song - 1 in range(len(songs)) and songs[song - 1] not in fav_songs:
+        fav_songs.append(songs[song - 1])
+        print('\nSONG ADDED')
+
+
+def removeFromFavourites(song):
+    if song > 0 and len(fav_songs) > song - 1:
+        fav_songs.pop(song - 1)
+        print('\nSONG REMOVED')
 
 
 def userLogin():
@@ -36,12 +53,19 @@ def userLogin():
             return users
 
 
+# Arrays
+users = []
+songs = [{'title': 'Jungle', 'artist': 'Drake', "genre": 'Hip-Hop/Rap'}, {'title': 'Replay', 'artist': 'Tems', 'genre': 'Nigerian R&B, Afropop'}, {'title': 'Search & Rescue', 'artist': 'Drake', 'genre': 'Hip-Hop/Rap'}, {'title': 'Kill Bill', 'artist': 'SZA', 'genre': 'Pop music, R&B/Soul, Doo-wop, psychedelic pop, pop soul'},
+         {'title': "Creepin'", 'artist': 'Metro Boomin, The Weekend & 21 Savage', 'genre': 'Hip-Hop/Rap'}, {'title': 'drive Me crazy!', 'artist': 'Lil Yachty', 'genre': 'Alternate/Indie'}, {'title': 'Impossible', 'artist': 'Travis Scott', 'genre': 'Hip-Hop/Rap'}]
+fav_songs = loadFavourites()
+
+
 # User Options
-os.system('cls')
 user_selection = int(input(
-    "[SONG LIBRARY]\n\n0-Exit Library\n1-Display All\n2-Filter Songs\n3-Sort Songs\n4-Add Songs to Favourites\n5-Remove Songs from Favourites\n6-Display Favourites\n\nInput: "))
+    "[SONG LIBRARY]\n1-Display All\n2-Filter Songs\n3-Sort Songs\n4-Add Songs to Favourites\n5-Remove Songs from Favourites\n6-Display Favourites\n\nInput: "))
 if user_selection == 1:
     # Display All Songs
+    os.system('cls')
     print('[ALL SONGS]')
     displayAll(songs)
 elif user_selection == 2:
@@ -58,98 +82,20 @@ elif user_selection == 3:
     loop = False
 elif user_selection == 4:
     # Add To Favourites
-    if os.path.getsize('favourite_songs.json') > 0:
-        with open('favourite_songs.json', 'r') as file_ref:
-            fav_songs = json.load(file_ref)
-    else:
-        fav_songs = []
-    add_song = True
-    while add_song == True:
-        os.system('cls')
-        print('ADD TO FAVOURITES')
-        displayAll(songs)
-        choose_song = int(
-            input('\nEnter Song "#" to Add or "0" to Exit & Save: '))
-        if choose_song > 0 and choose_song - 1 in range(len(songs)) and songs[choose_song - 1] not in fav_songs:
-            fav_songs.append(songs[choose_song - 1])
-            print('\nSONG ADDED...')
-            time.sleep(3)
-        elif songs[choose_song - 1] in fav_songs:
-            add_anyway = str(input(
-                '\nWARNING: This song has already been added to your Favourites, would you still like to add it? (type "yes" or "no"): '))
-            if add_anyway == 'yes':
-                fav_songs.append(songs[choose_song - 1])
-                print('\nSONG ADDED...')
-                time.sleep(3)
-            elif add_anyway == 'no':
-                print('\nSONG NOT ADDED...')
-                time.sleep(3)
-        elif choose_song == 0:
-            add_song = False
-            print('\nEXITING...')
-            time.sleep(3)
-            with open('favourite_songs.json', 'w') as file_ref:
-                json.dump(fav_songs, file_ref)
-            os.system('cls')
-        else:
-            print('\nERROR: Input Not Valid')
-            time.sleep(3)
+    os.system('cls')
+    print('[ADD TO FAVOURITES]')
+    displayAll(songs)
+    choose_song = int(input('Enter the # of the song you want to add: '))
+    addToFavourites(choose_song)
+    saveFavourites()
 elif user_selection == 5:
-    if os.path.getsize('favourite_songs.json') > 0:
-        with open('favourite_songs.json', 'r') as file_ref:
-            fav_songs = json.load(file_ref)
-        remove_song = True
-        while remove_song == True:
-            os.system("cls")
-            print("[Remove from Favourites]")
-            if len(fav_songs) > 0:
-                displayAll(fav_songs)
-                choose_song = int(
-                    input('\nEnter Song "#" to Remove or "0" to Exit & Save: '))
-            else:
-                remove_song = False
-                print("\n(NOTE: No Songs In Favourites)\n\nEXITING...")
-                time.sleep(3)
-                break
-            if choose_song > 0 and len(fav_songs) > choose_song - 1:
-                count = 0
-                for i in range(len(fav_songs)):
-                    if fav_songs[i] == fav_songs[choose_song - 1]:
-                        count += 1
-                fav_songs.pop(choose_song - 1)
-                if count < 2:
-                    print('\nSONG REMOVED...')
-                    time.sleep(3)
-                else:
-                    print(
-                        '\n(NOTE: It Seems this song was added to "Favourites" multiple times therfore you need to remove for each one)\n\nSONG REMOVED...')
-                    time.sleep(3)
-            elif choose_song == 0:
-                remove_song = False
-                print('\nEXITING...')
-                time.sleep(3)
-                with open('favourite_songs.json', 'w') as file_ref:
-                    json.dump(fav_songs, file_ref)
-                os.system('cls')
-            else:
-                print('ERROR: Input Not Valid')
-                remove_song = False
-    else:
-        print("No Songs In Favourites")
-        time.sleep(3)
+    os.system("cls")
+    print("[Remove from Favourites]")
+    displayAll(fav_songs)
+    choose_song = int(input('\nEnter # of song you want to remove: '))
+    removeFromFavourites(choose_song)
+    saveFavourites()
 elif user_selection == 6:
     os.system('cls')
-    print("DISPLAY FAVOURITES")
-    if os.path.getsize('favourite_songs.json') > 0:
-        with open('favourite_songs.json', 'r') as file_ref:
-            fav_songs = json.load(file_ref)
-            displayAll(fav_songs)
-    else:
-        print('\n(NOTE: No Songs in Favourites\n\nEXITING...')
-        time.sleep(3)
-    loop = False
-elif user_selection == 0:
-    loop = False
-    print('\nExiting Library...')
-    time.sleep(3)
-    os.system('cls')
+    print("[FAVOURITE SONGS]")
+    displayAll(fav_songs)
