@@ -6,10 +6,10 @@ import json
 # Functions
 
 
-def displayAll(array):
-    for i in range(len(array)):
-        print('[' + str(i + 1) + '] ' + array[i]['title'] +
-              ' (By ' + array[i]['artist'] + ')')
+def displayAll(list):
+    for i in range(len(list)):
+        print('[' + str(i + 1) + '] ' + list[i]['title'] +
+              ' (By ' + list[i]['artist'] + ')')
 
 
 def filterData(filterBy):
@@ -44,20 +44,33 @@ def removeFromFavourites(song):
         print('\nSONG REMOVED')
 
 
-def userLogin():
-    user = str(input('Username: '))
-    pswrd = str(input('Password: '))
-    confirm_pswrd = str(input('Confirm Password: '))
+def confirmUser(username):
+    ind = -1
     for i in range(len(users)):
-        if confirm_pswrd == pswrd and users[i]['username'] == user and users[i]['password'] == pswrd:
-            return users
+        if users[i]['user'] == username:
+            ind = i
+    return ind
 
 
-# Arrays
+# Lists
 users = []
 songs = [{'title': 'Jungle', 'artist': 'Drake', "genre": 'Hip-Hop/Rap'}, {'title': 'Replay', 'artist': 'Tems', 'genre': 'Nigerian R&B, Afropop'}, {'title': 'Search & Rescue', 'artist': 'Drake', 'genre': 'Hip-Hop/Rap'}, {'title': 'Kill Bill', 'artist': 'SZA', 'genre': 'Pop music, R&B/Soul, Doo-wop, psychedelic pop, pop soul'},
          {'title': "Creepin'", 'artist': 'Metro Boomin, The Weekend & 21 Savage', 'genre': 'Hip-Hop/Rap'}, {'title': 'drive Me crazy!', 'artist': 'Lil Yachty', 'genre': 'Alternate/Indie'}, {'title': 'Impossible', 'artist': 'Travis Scott', 'genre': 'Hip-Hop/Rap'}]
 fav_songs = loadFavourites()
+
+# Sign in/Sign up
+sign_in = str(input('[LOGIN]\n\nType "login" or "register": '))
+if sign_in.lower() == 'register':
+    username = str(input('Username: '))
+    password = str(input('Password: '))
+    confirm_password = str(input('Confirm Password: '))
+    if len(username) == 0 or len(password) == 0 or len(confirm_password) == 0:
+        print("\nMissing Inputs")
+    elif password == confirm_password and confirmUser(username) == -1:
+        users.append({'user': username, 'password': password})
+elif sign_in.lower() == 'login':
+    username = str(input('Username: '))
+    password = str(input('Password: '))
 
 
 # User Options
