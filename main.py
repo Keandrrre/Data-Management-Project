@@ -19,15 +19,15 @@ def filterData(filterBy):
             print(songs[i]['title'] + ' (By ' + songs[i]['artist'] + ')')
 
 
-def loadFavourites():
-    if os.path.getsize('favourite_songs.json') > 0:
-        with open('favourite_songs.json', 'r') as file_ref:
+def loadFile(file):
+    if os.path.getsize(file) > 0:
+        with open(file, 'r') as file_ref:
             return json.load(file_ref)
     else:
         return []
 
 
-def saveFavourites():
+def saveFile(file):
     with open('favourite_songs.json', 'w') as file_ref:
         json.dump(fav_songs, file_ref)
 
@@ -52,14 +52,24 @@ def confirmUser(username):
     return ind
 
 
-# Lists
-users = []
+def loginHandler():
+    username = str(input('Username: '))
+    password = str(input('Password: '))
+    for i in range(len(users)):
+        if users[i]['user'] == username and users[i]['pass'] == password:
+            print('\nlogin Successful')
+            return users[i]['user']
+        else:
+            print('\nLogin Failed')
+
+
+# Load Users & Songs
+users = loadFile('users.json')
 songs = [{'title': 'Jungle', 'artist': 'Drake', "genre": 'Hip-Hop/Rap'}, {'title': 'Replay', 'artist': 'Tems', 'genre': 'Nigerian R&B, Afropop'}, {'title': 'Search & Rescue', 'artist': 'Drake', 'genre': 'Hip-Hop/Rap'}, {'title': 'Kill Bill', 'artist': 'SZA', 'genre': 'Pop music, R&B/Soul, Doo-wop, psychedelic pop, pop soul'},
          {'title': "Creepin'", 'artist': 'Metro Boomin, The Weekend & 21 Savage', 'genre': 'Hip-Hop/Rap'}, {'title': 'drive Me crazy!', 'artist': 'Lil Yachty', 'genre': 'Alternate/Indie'}, {'title': 'Impossible', 'artist': 'Travis Scott', 'genre': 'Hip-Hop/Rap'}]
-fav_songs = loadFavourites()
 
 # Sign in/Sign up
-sign_in = str(input('[LOGIN]\n\nType "login" or "register": '))
+sign_in = str(input('[LOGIN]\n\n"login" or "register": '))
 if sign_in.lower() == 'register':
     username = str(input('Username: '))
     password = str(input('Password: '))
@@ -68,10 +78,18 @@ if sign_in.lower() == 'register':
         print("\nMissing Inputs")
     elif password == confirm_password and confirmUser(username) == -1:
         users.append({'user': username, 'password': password})
+        print('Account Created')
+        saveFile('users.json')
+        currentUser = loginHandler()
+    elif password != confirm_password:
+        print('\nPasswords Do Not Match')
+    else:
+        print('\nUsername Already In Use')
 elif sign_in.lower() == 'login':
-    username = str(input('Username: '))
-    password = str(input('Password: '))
+    currentUser = loginHandler()
 
+# load Favourite songs
+fav_songs = loadFile('favourite_songs.json')
 
 # User Options
 user_selection = int(input(
@@ -100,14 +118,14 @@ elif user_selection == 4:
     displayAll(songs)
     choose_song = int(input('Enter the # of the song you want to add: '))
     addToFavourites(choose_song)
-    saveFavourites()
+    saveFile('favourite_songs.json')
 elif user_selection == 5:
     os.system("cls")
     print("[Remove from Favourites]")
     displayAll(fav_songs)
     choose_song = int(input('\nEnter # of song you want to remove: '))
     removeFromFavourites(choose_song)
-    saveFavourites()
+    saveFile('favourite_songs.json')
 elif user_selection == 6:
     os.system('cls')
     print("[FAVOURITE SONGS]")
