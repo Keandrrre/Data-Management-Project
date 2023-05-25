@@ -88,7 +88,7 @@ if sign_in.lower() == 'register':
 elif sign_in.lower() == 'login':
     currentUser = loginHandler()
 
-# load Favourite songs
+# load Favourite songs from file
 fav_songs = loadFile('favourite_songs.json')
 
 # User Options
